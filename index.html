@@ -1,0 +1,1133 @@
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <title>DreaMontage</title>
+    <meta name="description" content="Arbitrary Frame-Guided One-Shot Video Generation">
+    <meta name="keywords" content="Video Generation, Multi-Modal">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#EDE8F5">
+    <meta property="og:image" content="">
+    <link rel="stylesheet" href="./assets/index.css">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css'>
+    <link rel="shortcut icon" href="./assets/dreamontage_label.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-stretch: 100%;
+            font-display: block;
+            font-weight: 300 700;
+            src: url('./assets/roboto.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        @font-face {
+            font-family: 'DancingScript';
+            src: url('./assets/DancingScript-Bold.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Caveat';
+            src: url('./assets/Caveat-Medium.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Alegreya';
+            src: url('./assets/Alegreya-Regular.ttf') format('truetype');
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        video {
+            background-color: #000000;
+            aspect-ratio: 16 / 9;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: "Roboto", sans-serif;
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+        }
+
+        #intro {
+            padding: 100px 0 0px 0;
+            justify-content: center;
+            /* Center content vertically */
+            text-align: center;
+            /* Center text alignment */
+            background-image: url('./assets/background.jpg');
+            background-size: cover;
+            /* Cover the entire container */
+            background-position: center;
+            /* Center the background image */
+            color: #ffffff;
+            /* Ensure text color is readable */
+            box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.7);
+        }
+
+        #intro h1 {
+            font-size: 90px;
+            font-weight: 300;
+            margin: 20px 0;
+        }
+
+        #intro h2 {
+            margin: 20px 0 40px 0;
+            font-weight: 300;
+            color: #ffffff
+        }
+
+        #intro h2 strong {
+            color: #fff;
+        }
+
+        .authors {
+            max-width: 900px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 25px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .author-block {
+            display: inline-block;
+            margin: 0 10px 0 10px;
+        }
+
+        .author-block a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .author-block a:hover {
+            color: #fff;
+        }
+
+        .author-affiliation {
+            font-size: 16px;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 60px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .author-affiliation .author-block {
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        section {
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .content {
+            padding: 0 10%;
+        }
+
+        .button {
+            background-color: #ccc;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: background-color 0.5s;
+            text-decoration: none;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .button:hover {
+            background-color: #fff;
+        }
+
+        .bibtex-section {
+            background-color: #111;
+            padding: 40px 10%;
+            /* padding: 20px; */
+            text-align: center;
+            margin-top: 60px;
+            color: #ccc;
+            /* max-width: 800px; */
+        }
+
+        .bibtex-section h3 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .bibtex-code {
+            background-color: #222;
+            color: #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            display: inline-block;
+            font-family: monospace;
+            /* max-width: 800px; */
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        section {
+            margin-top: 80px;
+        }
+
+        section:first-of-type {
+            margin-top: 0;
+        }
+
+        .title {
+            background-color: #000;
+            position: sticky;
+            top: 0;
+            padding: 20px 10%;
+            font-size: 20px;
+            font-weight: 600;
+            z-index: 1000;
+            min-height: 60px;
+            box-sizing: border-box;
+        }
+
+        .description {
+            padding: 0 10% 20px 10%;
+            color: #999;
+            line-height: 25px;
+            font-weight: 300;
+        }
+
+        .highlight {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .flex-row {
+            display: flex;
+            column-gap: 5px;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            padding: 0 5px 5px 5px;
+
+        }
+
+        .flex-row>div {
+            flex-grow: 1;
+            flex-basis: 0;
+            position: relative;
+        }
+
+        .flex>div {
+            width: calc(100% / 3 - 5px * 2 / 3);
+            margin-top: 2.5px;
+            margin-bottom: 2.5px;
+            position: relative;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+
+        .prompt-wrap {
+            position: relative;
+        }
+
+        .flex-2 {
+            justify-content: center;
+            column-gap: 5px;
+        }
+
+        .flex-2>div {
+            width: calc(100% / 2 - 5px / 2);
+            min-width: calc(100% / 3 - 5px * 2 / 3);
+            max-width: calc(100vh - 200px);
+        }
+
+        video,
+        img {
+            width: 100%;
+        }
+
+        .loading-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .loading-text {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .loading-icon {
+            font-size: 48px;
+        }
+
+        .prompt {
+            max-width: calc(100% - 20px);
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 10px;
+            backdrop-filter: blur(10px);
+            top: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+            box-sizing: border-box;
+            white-space: pre-line;
+        }
+
+        .flex-very-compact .full-screen-button {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            border-radius: 0;
+        }
+
+        .chinese {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: bold;
+            color: #d18585;
+            font-size: 1.1em;
+        }
+
+
+        .prompt-wrap:hover .prompt {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        @media (hover: hover) {
+
+            .full-screen-wrap:hover .full-screen-button {
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            #contributors a:hover {
+                background-color: #222;
+            }
+        }
+
+        @media (hover: none) {
+            #contributors a {
+                pointer-events: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .flex-dynamic>div {
+                width: calc(100% / 2 - 5px / 2);
+            }
+        }
+
+        @media (max-width: 640px) {
+            #intro h1 {
+                font-size: 50px;
+            }
+
+            #intro h2 {
+                font-size: 20px;
+            }
+
+            .ruler {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 512px) {
+
+            .flex-dynamic>div,
+            .flex-dynamic-1>div {
+                width: 100%;
+            }
+
+            .content {
+                padding: 0 12px;
+            }
+
+            .description {
+                padding: 0 12px 20px 12px;
+            }
+
+            .title {
+                padding: 20px 12px;
+            }
+
+            .ruler-tight {
+                font-size: 6px;
+                column-gap: 0;
+            }
+
+            .title-long {
+                font-size: 16px;
+            }
+
+        }
+
+        .margin-top {
+            margin-top: 50px;
+        }
+
+        .ruler {
+            text-align: center;
+            position: sticky;
+            top: 60px;
+            z-index: 999;
+            background-color: #000;
+            color: #999;
+            padding: 5px 0;
+        }
+
+        .ruler>div {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .selected {
+            box-shadow: 0 0 0 5px #fff;
+        }
+
+        #title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            #title-container {
+                text-size-adjust: 80%;
+            }
+        }
+
+        #title-icon {
+            height: 8em;
+            width: auto;
+            margin-right: 0px;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            #title-icon {
+                height: 6em;
+                width: auto;
+            }
+        }
+
+        .title-art {
+            font-family: 'DancingScript', sans-serif;
+        }
+
+        .title-art2 {
+            font-family: 'Caveat', sans-serif;
+        }
+
+        .title-art3 {
+            font-family: 'Alegreya', sans-serif;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            color: rgb(255, 255, 255);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        #video-wrapper {
+            border-radius: 50px;
+            max-width: 720px;
+            padding-bottom: 40%;
+            margin: 0 auto;
+            background: #000000;
+        }
+
+        .ethics-section {
+            padding: 100px 10%;
+            text-align: center;
+            margin-top: 60px;
+            color: #ccc;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .ethics-section {
+                padding: 30px 10%;
+            }
+        }
+
+        .acknowledgements-section {
+            padding: 100px 10%;
+            text-align: center;
+            margin-top: 60px;
+            color: #ccc;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .video-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: 50vh;
+        }
+
+        .video-container video {
+            width: 100%;
+            max-width: 800px;
+            max-height: 450px;
+            height: auto;
+        }
+
+        .units-rule {
+            display: grid;
+            grid-auto-flow: column;
+            justify-content: center;
+            align-items: center;
+            column-gap: 0.75rem;
+        }
+
+        .units-rule i {
+            display: block;
+            width: 1px;
+            height: 1em;
+            background: currentColor;
+            opacity: 0.25;
+            /* 细且淡的竖线 */
+        }
+
+        /* 虚拟进度条样式 */
+        .video-wrapper {
+            position: relative;
+        }
+
+        .video-progress-container {
+            position: absolute;
+            bottom: 4%;
+            left: 5%;
+            right: 5%;
+            height: 4px;
+            background: rgba(200, 200, 200, 0.5);
+            border-radius: 2px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .video-wrapper:hover .video-progress-container,
+        .prompt-wrap:hover .video-progress-container {
+            opacity: 1;
+        }
+
+        .video-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: rgba(225, 225, 225, 1);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        .video-progress-time {
+            position: absolute;
+            top: -24px;
+            right: 0;
+            font-family: 'Roboto', sans-serif;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0);
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+
+        .video-progress-gradient {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 25%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.97) 0%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 9;
+            pointer-events: none;
+        }
+
+        .video-wrapper:hover .video-progress-gradient,
+        .prompt-wrap:hover .video-progress-gradient {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <section id="intro">
+        <div class="content">
+            <div id="title-container">
+                <img id="title-icon" src="./assets/dreamontage_label.png" alt="Icon">
+                <h1><strong>DreaMontage</strong></h1>
+            </div>
+            <h2><strong>Arbitrary Frame-Guided One-Shot Video Generation</strong></h2>
+            <div class="authors">
+                <span class="author-block"><a href="https://scholar.google.com/citations?user=X21Fz-EAAAAJ">Jiawei
+                        Liu</a><sup>*</sup><sup>&dagger;</sup></span>
+                <span class="author-block">Junqiao Li</a><sup>*</sup></span>
+                <span class="author-block"><a
+                        href="https://scholar.google.com/citations?user=s2owJCQAAAAJ&hl=en&oi=ao">Jiangfan
+                        Deng</a><sup>*</sup><sup>&dagger;</sup></span>
+                <span class="author-block"><a href="https://scholar.google.com/citations?hl=en&user=wqA7EIoAAAAJ">Gen
+                        Li</a><sup>*</sup></span>
+                <span class="author-block"><a href="https://scholar.google.com/citations?hl=en&user=KBisI04AAAAJ">Siyu
+                        Zhou</a></span>
+                <span class="author-block">Zetao Fang</a></span>
+                <span class="author-block"><a
+                        href="https://scholar.google.com/citations?user=gIZam1EAAAAJ&hl=en&oi=ao">Shanshan
+                        Lao</a></span>
+                <span class="author-block"><a
+                        href="https://scholar.google.com/citations?user=h3LrJ_4AAAAJ&hl=en&oi=ao">Zengde Deng</a></span>
+                <span class="author-block">Jianing Zhu</a></span>
+                <span class="author-block">Tingting Ma</a></span>
+                <span class="author-block">Jiayi Li</a></span>
+                <span class="author-block">Yunqiu Wang</a></span>
+                <span class="author-block"><a href="https://scholar.google.com/citations?user=9rWWCgUAAAAJ">Qian
+                        He</a></span>
+                <span class="author-block"><a
+                        href="https://scholar.google.com/citations?user=LVsp9RQAAAAJ&hl=en&oi=ao">Xinglong Wu</a></span>
+            </div>
+
+            <!-- Added the affiliations section -->
+            <div class="author-affiliation">
+                <p>
+                    <span>
+                        <sup>*</sup> Equal contribution,
+                        <sup>&dagger;</sup> Corresponding author
+                    </span>
+                </p>
+                <p class="units-rule">
+                    <span>Intelligent Creation Team, Bytedance</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="container text-center" style="margin-top: 50px; text-align: center;">
+        <p class="title-art3" style="font-size: 1.6em;"> Flexible Dreams, Seamless Montage</p>
+        <p class="description" style="font-size: 1.0em;"> A short demo video by DreaMontage</p>
+    </div>
+
+
+    <div class="video-container">
+        <video controls>
+            <source src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/dreamontage_teaser.mp4" type="video/mp4">
+            Fluid Dreams, Seamless Montage
+        </video>
+    </div>
+
+    <section id="video">
+        <div class="title" style="font-family: 'Alegreya'; font-size: 1.6em;">
+            Video Generation from Multi-keyframe-condition
+        </div>
+
+        <div class="description">
+            Our model can generate videos with given keyframes placed at specified positions. <em><strong>Hover over the video to reveal the insertion time and input prompt.</strong></em>
+        </div>
+
+        <div class="flex flex-dynamic">
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/urban_evolution_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10], [15, 15]]
+                    prompt: [0, 10] Train moves forward, static window frame; [10, 15] Window shatters into digital fragments; [15, 20] Camera flies through the window into a future cyberpunk city.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/morphing_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 0], [2, 2], [7, 7], [12, 12]]
+                    prompt: [0, 2] Droplet turns into a swan; [2, 7] Swan turns into a mechanical pocket watch; [7, 12] Mechanical pocket watch turns into a mechanical rose.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/evolution_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10]]
+                    prompt: [0, 5] An ape approaches the cave and gradually stands upright; [5, 10] The primitive human walks out of the cave, starts riding a horse, becomes a soldier.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/jellyfish_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10]]
+                    prompt: [0, 5] The camera follows the dandelion; [5, 10] The dandelion dives into the deep sea and transforms into a glowing jellyfish.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/cabin_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10]]
+                    prompt: [0, 5] The camera pushes forward, then dives downward; [5, 10] The camera pushes in, dives downward, and enters the cabin through the doorway.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/lifetime_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10], [15, 15], [20, 20]]
+                    prompt: [0, 5] Zoom into extreme close-up of a man's eye; camera flies through the right pupil to reveal a man walking fast; [5, 10] Man walks forward; a golden butterfly enters. He follows it with his gaze until its wings fully obscure the lens; [10, 15] Butterfly flies away revealing a golden meadow; a boy runs in to chase it; [15, 20] The boy turns around, faces the camera directly, smiling.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="video">
+        <div class="title" style="font-family: 'Alegreya'; font-size: 1.6em;">
+            Video Generation from Video-condition (Transition)
+        </div>
+
+        <div class="description">
+            Our model can seamlessly connect multiple videos. <em><strong>Hover over the video to reveal the insertion time and input prompt.</strong></em>
+        </div>
+
+        <div class="flex flex-dynamic">
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/surf_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 3], [7, 10]]
+                    prompt: [3, 7] Camera follows a man skiing. The snow ahead transitions into the sea. His snowboard transforms into a yellow surfboard, and he starts surfing.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/model2_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 2], [4, 6], [8, 10]]
+                    prompt: [0, 10] seamless transition.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/model3_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 2], [6, 8]]
+                    prompt: [2, 6] Seamless Character Outfit Change.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/model1_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 2], [4, 6], [8, 10]]
+                    prompt: [2, 4] Camera push-in; [6, 8] The model puts down the silver ball, and the camera pulls back.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/cat_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 2], [4, 6], [8, 10]]
+                    prompt: [0, 10] seamless transition.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/portrait_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 2], [4, 6], [8, 10]]
+                    prompt: [0, 10] seamless transition.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="video">
+        <div class="title" style="font-family: 'Alegreya'; font-size: 1.6em;">
+            Video Generation from Mixed Image-video condition
+        </div>
+
+        <div class="description">
+            Our model can insert images or videos at any user-specified timestamp. <em><strong>Hover over the video to reveal the insertion time and input prompt.</strong></em>
+        </div>
+
+        <div class="flex flex-dynamic">
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/motorbike_astronaut_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 0], [3, 5], [10,12]]
+                    prompt: [0, 3] The man takes off his helmet; [5, 10] The man rides the motorcycle into the sky, flies into outer space, and morphs into an astronaut.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/tree_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 12]]
+                    prompt: [0, 5] Seed sprouts and grows into a pine tree; [5, 10] Camera orbits pine tree as it transforms into a Christmas tree.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/squirrel_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 0], [5, 8], [12, 12]]
+                    prompt: [0, 5] A squirrel slides down the ice slide and runs onto the grass; [8, 12] The little squirrel keeps running, comes to the treehouse, and picks up a pinecone.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="video">
+        <div class="title" style="font-family: 'Alegreya'; font-size: 1.6em;">
+            Video Generation from Last-frame-condition
+        </div>
+        <div class="description">
+            Our model can generate videos ending with a given image. <em><strong>Hover over the video to reveal the insertion time and input prompt.</strong></em>
+        </div>
+
+        <div class="flex flex-dynamic">
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/plane_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[5, 5]]
+                    prompt: [0, 5] An airplane flies quickly across the sky, leaving a smoke trail that spells out the word "Travel".
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/building_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[5, 5]]
+                    prompt: [0, 5] A beam scans upward from the foundation, rapidly constructing the building layer by layer from bottom to top.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/hamburger_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[5, 5]]
+                    prompt: [0, 5] A vertical assembly process. On a wooden table, a bun base, patty, cheese, lettuce, and tomatoes fall from above in sequence.</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="video">
+        <div class="title" style="font-family: 'Alegreya'; font-size: 1.6em;">
+            Video Generation from Video-condition (Extension)
+        </div>
+
+        <div class="description">
+            Our model can extend videos. <em><strong>Hover over the video to reveal the insertion time and input
+                    prompt.</strong></em>
+        </div>
+
+        <div class="flex flex-dynamic">
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/cat_ride_horse_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 3]]
+                    prompt: [3, 10] A horse walks in. The kitten jumps from a bike onto the horse's back. Camera pans left; the kitten rides the horse to a stream.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/jingerbread_man_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 3]]
+                    prompt: [3, 8] Static shot. Snow falling. Gingerbread man dances, swaying left and right.
+                </div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/sport_compressed.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">insert_seconds: [[0, 5]]
+                    prompt: [5, 10] Two people hugging each other.
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="ethics-section">
+        <h3>Ethical Considerations</h3>
+        <p>
+            The insertion condition images and videos used in these examples are sourced from publicly available channels or generated by
+            models, and are intended solely to demonstrate the capabilities of this research. If there are any concerns,
+            please contact us (lijunqiao.123@bytedance.com) and we will remove the relevant examples in time.
+        </p>
+    </section>
+
+</body>
+
+<script>
+    // 虚拟进度条功能
+    function formatTime(seconds) {
+        if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
+        var mins = Math.floor(seconds / 60);
+        var secs = Math.floor(seconds % 60);
+        return mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }
+
+    function updateProgressBar(video) {
+        // 支持两种容器：.video-wrapper 和 .prompt-wrap
+        var wrapper = $(video).closest('.video-wrapper, .prompt-wrap');
+        var progressBar = wrapper.find('.video-progress-bar');
+        var progressTime = wrapper.find('.video-progress-time');
+
+        if (video.duration && video.duration > 0) {
+            var percent = (video.currentTime / video.duration) * 100;
+            progressBar.css('width', percent + '%');
+            progressTime.text(formatTime(video.currentTime) + ' / ' + formatTime(video.duration));
+        }
+    }
+
+    // 为所有带进度条的视频绑定事件
+    $('video').each(function () {
+        var video = this;
+        var wrapper = $(video).closest('.video-wrapper, .prompt-wrap');
+        var progressContainer = wrapper.find('.video-progress-container');
+
+        // 如果该视频没有进度条容器，跳过
+        if (progressContainer.length === 0) return;
+
+        // 更新进度
+        $(video).on('timeupdate', function () {
+            updateProgressBar(video);
+        });
+
+        // 视频加载后初始化时间显示
+        $(video).on('loadedmetadata', function () {
+            updateProgressBar(video);
+        });
+    });
+</script>
+
+</html>
