@@ -589,6 +589,76 @@
         .prompt-wrap:hover .video-progress-gradient {
             opacity: 1;
         }
+
+        /* Tooltip 容器 */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Tooltip 文本 */
+        .tooltip-text {
+            visibility: hidden;
+            width: 220px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            /* 显示在上方 */
+            left: 50%;
+            margin-left: -110px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            font-weight: normal;
+            line-height: 1.4;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 底部小箭头 */
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        /* 悬停显示 */
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #try-now-hint {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            display: none;
+        }
+
+        #try-now-star {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            #try-now-hint {
+                font-size: 13px;
+                color: #888;
+                line-height: 1.5;
+                display: block;
+            }
+            #try-now-star {
+                display: inline;
+            }
+        }
     </style>
 </head>
 
@@ -643,7 +713,25 @@
             <a class="button" href="https://arxiv.org/abs/2512.21252" target="_blank" rel="noopener noreferrer">
                 Research Paper
             </a>
+            <a class="button"
+                href="https://www.bilibili.com/video/BV1ETBDBNE45/?vd_source=35378560e12e8f9772448a6e9255f5a8"
+                target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-github" style="font-size:17px"></i>
+                Demo-Bilibili
+            </a>
 
+            <div class="tooltip-container">
+                <a class="button" href="https://dreamina.capcut.com/ai-tool/home?type=video" target="_blank">
+                    <i class="fa fa-github"></i>
+                    Try Now<sup id="try-now-star">*</sup>
+                </a>
+                <span class="tooltip-text">
+                    Note: Select <b>"Multiframes"</b> from the dropdown menu after entering.
+                </span>
+            </div>
+            <div id="try-now-hint">
+                * Note: Select <b>"Multiframes"</b> from the dropdown menu after entering.
+            </div>
         </div>
     </section>
 
@@ -655,8 +743,9 @@
 
     <div class="video-container">
         <video controls>
-            <source src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/teaser_1225.mp4" type="video/mp4">
-            Fluid Dreams, Seamless Montage
+            <source src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/teaser_1225.mp4"
+                type="video/mp4">
+            Flexible Dreams, Seamless Montage
         </video>
     </div>
 
@@ -666,7 +755,8 @@
         </div>
 
         <div class="description">
-            Our model can generate videos with given keyframes placed at specified positions. <em><strong>Hover over the video to reveal the insertion time and input prompt.</strong></em>
+            Our model can generate videos with given keyframes placed at specified positions. <em><strong>Hover over the
+                    video to reveal the input prompt.</strong></em>
         </div>
 
         <div class="flex flex-dynamic">
@@ -677,14 +767,14 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/urban_evolution_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/urban_evolution_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10], [15, 15]]
-                    prompt: [0, 10] Train moves forward, static window frame; [10, 15] Window shatters into digital fragments; [15, 20] Camera flies through the window into a future cyberpunk city.
+                <div class="prompt">[0, 10] Train moves forward, static window frame; [10, 15] Window shatters into
+                    digital fragments; [15, 20] Camera flies through the window into a future cyberpunk city.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -694,14 +784,46 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/morphing_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/morphing_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 0], [2, 2], [7, 7], [12, 12]]
-                    prompt: [0, 2] Droplet turns into a swan; [2, 7] Swan turns into a mechanical pocket watch; [7, 12] Mechanical pocket watch turns into a mechanical rose.
+                <div class="prompt">[0, 2] Droplet turns into a swan; [2, 7] Swan turns into a mechanical pocket watch;
+                    [7, 12] Mechanical pocket watch turns into a mechanical rose.</div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/evolution_with_cond.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">[0, 5] An ape approaches the cave and gradually stands upright; [5, 10] The
+                    primitive human walks out of the cave, starts riding a horse, becomes a soldier.</div>
+            </div>
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay muted playsinline loop
+                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/jellyfish_with_cond.mp4"></video>
+                <div class="video-progress-gradient"></div>
+                <div class="video-progress-container">
+                    <div class="video-progress-bar"></div>
+                    <div class="video-progress-time">0:00 / 0:00</div>
+                </div>
+                <div class="prompt">[0, 5] The camera follows the dandelion; [5, 10] The dandelion dives into the deep
+                    sea and transforms into a glowing jellyfish.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -711,14 +833,14 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/evolution_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/cabin_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10]]
-                    prompt: [0, 5] An ape approaches the cave and gradually stands upright; [5, 10] The primitive human walks out of the cave, starts riding a horse, becomes a soldier.
+                <div class="prompt">[0, 5] The camera pushes forward, then dives downward; [5, 10] The camera pushes in,
+                    dives downward, and enters the cabin through the doorway.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -728,48 +850,17 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/jellyfish_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/lifetime_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10]]
-                    prompt: [0, 5] The camera follows the dandelion; [5, 10] The dandelion dives into the deep sea and transforms into a glowing jellyfish.
-                </div>
-            </div>
-            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
-                <div class="loading-placeholder">
-                    <div class="loading-text">Loading...</div>
-                    <div class="loading-icon">&#9749</div>
-                </div>
-                <video autoplay muted playsinline loop
-                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/cabin_compressed.mp4"></video>
-                <div class="video-progress-gradient"></div>
-                <div class="video-progress-container">
-                    <div class="video-progress-bar"></div>
-                    <div class="video-progress-time">0:00 / 0:00</div>
-                </div>
-                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10]]
-                    prompt: [0, 5] The camera pushes forward, then dives downward; [5, 10] The camera pushes in, dives downward, and enters the cabin through the doorway.
-                </div>
-            </div>
-            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
-                <div class="loading-placeholder">
-                    <div class="loading-text">Loading...</div>
-                    <div class="loading-icon">&#9749</div>
-                </div>
-                <video autoplay muted playsinline loop
-                    onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/lifetime_compressed.mp4"></video>
-                <div class="video-progress-gradient"></div>
-                <div class="video-progress-container">
-                    <div class="video-progress-bar"></div>
-                    <div class="video-progress-time">0:00 / 0:00</div>
-                </div>
-                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 10], [15, 15], [20, 20]]
-                    prompt: [0, 5] Zoom into extreme close-up of a man's eye; camera flies through the right pupil to reveal a man walking fast; [5, 10] Man walks forward; a golden butterfly enters. He follows it with his gaze until its wings fully obscure the lens; [10, 15] Butterfly flies away revealing a golden meadow; a boy runs in to chase it; [15, 20] The boy turns around, faces the camera directly, smiling.
+                <div class="prompt">[0, 5] Zoom into extreme close-up of a man's eye; camera flies through the right
+                    pupil to reveal a man walking fast; [5, 10] Man walks forward; a golden butterfly enters. He follows
+                    it with his gaze until its wings fully obscure the lens; [10, 15] Butterfly flies away revealing a
+                    golden meadow; a boy runs in to chase it; [15, 20] The boy turns around, faces the camera directly,
+                    smiling.
                 </div>
             </div>
         </div>
@@ -781,7 +872,8 @@
         </div>
 
         <div class="description">
-            Our model can seamlessly connect multiple videos. <em><strong>Hover over the video to reveal the insertion time and input prompt.</strong></em>
+            Our model can seamlessly connect multiple videos. <em><strong>Hover over the video to reveal the input
+                    prompt.</strong></em>
         </div>
 
         <div class="flex flex-dynamic">
@@ -793,14 +885,14 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/surf_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/surf_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 3], [7, 10]]
-                    prompt: [3, 7] Camera follows a man skiing. The snow ahead transitions into the sea. His snowboard transforms into a yellow surfboard, and he starts surfing.
+                <div class="prompt">[3, 7] Camera follows a man skiing. The snow ahead transitions into the sea. His
+                    snowboard transforms into a yellow surfboard, and he starts surfing.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -810,14 +902,13 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/model2_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/model2_with_cond_v1.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 2], [4, 6], [8, 10]]
-                    prompt: [0, 10] seamless transition.
+                <div class="prompt">[0, 10] seamless transition.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -827,14 +918,13 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/model3_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/model3_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 2], [6, 8]]
-                    prompt: [2, 6] Seamless Character Outfit Change.
+                <div class="prompt">[2, 6] Seamless character outfit change.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -844,14 +934,14 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/model1_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/model1_with_cond_v1.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 2], [4, 6], [8, 10]]
-                    prompt: [2, 4] Camera push-in; [6, 8] The model puts down the silver ball, and the camera pulls back.
+                <div class="prompt">[2, 4] Camera push-in; [6, 8] The model puts down the silver ball, and the camera
+                    pulls back.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -861,14 +951,13 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/cat_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/cat_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 2], [4, 6], [8, 10]]
-                    prompt: [0, 10] seamless transition.
+                <div class="prompt">[0, 10] seamless transition.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -878,14 +967,13 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/portrait_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/portrait_with_cond_v3.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 2], [4, 6], [8, 10]]
-                    prompt: [0, 10] seamless transition.
+                <div class="prompt">[0, 10] seamless transition.
                 </div>
             </div>
         </div>
@@ -897,7 +985,8 @@
         </div>
 
         <div class="description">
-            Our model can insert images or videos at any user-specified timestamp. <em><strong>Hover over the video to reveal the insertion time and input prompt.</strong></em>
+            Our model can insert images or videos at any user-specified timestamp. <em><strong>Hover over the video to
+                    reveal the input prompt.</strong></em>
         </div>
 
         <div class="flex flex-dynamic">
@@ -908,14 +997,14 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/motorbike_astronaut_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/motorbike_astronaut_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 0], [3, 5], [10,12]]
-                    prompt: [0, 3] The man takes off his helmet; [5, 10] The man rides the motorcycle into the sky, flies into outer space, and morphs into an astronaut.
+                <div class="prompt">[0, 3] The man takes off his helmet; [5, 10] The man rides the motorcycle into the
+                    sky, flies into outer space, and morphs into an astronaut.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -925,14 +1014,14 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/tree_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/tree_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 0], [5, 5], [10, 12]]
-                    prompt: [0, 5] Seed sprouts and grows into a pine tree; [5, 10] Camera orbits pine tree as it transforms into a Christmas tree.
+                <div class="prompt">[0, 5] Seed sprouts and grows into a pine tree; [5, 10] Camera orbits pine tree as
+                    it transforms into a Christmas tree.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -942,14 +1031,14 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/squirrel_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/squirrel_with_cond_v1.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 0], [5, 8], [12, 12]]
-                    prompt: [0, 5] A squirrel slides down the ice slide and runs onto the grass; [8, 12] The little squirrel keeps running, comes to the treehouse, and picks up a pinecone.
+                <div class="prompt">[0, 5] A squirrel slides down the ice slide and runs onto the grass; [8, 12] The
+                    little squirrel keeps running, comes to the treehouse, and picks up a pinecone.
                 </div>
             </div>
         </div>
@@ -960,7 +1049,8 @@
             Video Generation from Last-frame-condition
         </div>
         <div class="description">
-            Our model can generate videos ending with a given image. <em><strong>Hover over the video to reveal the insertion time and input prompt.</strong></em>
+            Our model can generate videos ending with a given image. <em><strong>Hover over the video to reveal the
+                    input prompt.</strong></em>
         </div>
 
         <div class="flex flex-dynamic">
@@ -971,14 +1061,14 @@
                 </div>
                 <video autoplay playsinline muted loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/plane_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/plane_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[5, 5]]
-                    prompt: [0, 5] An airplane flies quickly across the sky, leaving a smoke trail that spells out the word "Travel".
+                <div class="prompt">[0, 5] An airplane flies quickly across the sky, leaving a smoke trail that spells
+                    out the word "Travel".
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -988,14 +1078,14 @@
                 </div>
                 <video autoplay playsinline muted loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/building_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/building_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[5, 5]]
-                    prompt: [0, 5] A beam scans upward from the foundation, rapidly constructing the building layer by layer from bottom to top.
+                <div class="prompt">[0, 5] A beam scans upward from the foundation, rapidly constructing the building
+                    layer by layer from bottom to top.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -1005,14 +1095,14 @@
                 </div>
                 <video autoplay playsinline muted loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/hamburger_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/hamburger_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[5, 5]]
-                    prompt: [0, 5] A vertical assembly process. On a wooden table, a bun base, patty, cheese, lettuce, and tomatoes fall from above in sequence.</div>
+                <div class="prompt">[0, 5] A vertical assembly process. On a wooden table, a bun base, patty, cheese,
+                    lettuce, and tomatoes fall from above in sequence.</div>
             </div>
         </div>
     </section>
@@ -1023,8 +1113,7 @@
         </div>
 
         <div class="description">
-            Our model can extend videos. <em><strong>Hover over the video to reveal the insertion time and input
-                    prompt.</strong></em>
+            Our model can extend videos. <em><strong>Hover over the video to reveal the input prompt.</strong></em>
         </div>
 
         <div class="flex flex-dynamic">
@@ -1035,14 +1124,14 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/cat_ride_horse_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/cat_ride_horse_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 3]]
-                    prompt: [3, 10] A horse walks in. The kitten jumps from a bike onto the horse's back. Camera pans left; the kitten rides the horse to a stream.
+                <div class="prompt">[3, 10] A horse walks in. The kitten jumps from a bike onto the horse's back. Camera
+                    pans left; the kitten rides the horse to a stream.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -1052,14 +1141,13 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/jingerbread_man_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/jingerbread_man_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 3]]
-                    prompt: [3, 8] Static shot. Snow falling. Gingerbread man dances, swaying left and right.
+                <div class="prompt">[3, 8] Static shot. Snow falling. Gingerbread man dances, swaying left and right.
                 </div>
             </div>
             <div class="prompt-wrap full-screen-wrap" style="position: relative;">
@@ -1069,14 +1157,13 @@
                 </div>
                 <video autoplay muted playsinline loop
                     onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';"
-                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/sport_compressed.mp4"></video>
+                    src="https://lf3-static.bytednsdoc.com/obj/eden-cn/321eh7vhpxubqps/sport_with_cond.mp4"></video>
                 <div class="video-progress-gradient"></div>
                 <div class="video-progress-container">
                     <div class="video-progress-bar"></div>
                     <div class="video-progress-time">0:00 / 0:00</div>
                 </div>
-                <div class="prompt">insert_seconds: [[0, 5]]
-                    prompt: [5, 10] Two people hugging each other.
+                <div class="prompt">[5, 10] Two people hugging each other.
                 </div>
             </div>
         </div>
@@ -1084,7 +1171,8 @@
     <section class="ethics-section">
         <h3>Ethical Considerations</h3>
         <p>
-            The insertion condition images and videos used in these examples are sourced from publicly available channels or generated by
+            The insertion condition images and videos used in these examples are sourced from publicly available
+            channels or generated by
             models, and are intended solely to demonstrate the capabilities of this research. If there are any concerns,
             please contact us (lijunqiao.123@bytedance.com) and we will remove the relevant examples in time.
         </p>
